@@ -38,9 +38,12 @@ function PostRequest() {
   const [subject, setSubject] = useState("");
   const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
+  const [budget, setBudget] = useState("40");
+  const [deadline, setDeadline] = useState("");
   const [urgency, setUrgency] = useState<"low" | "normal" | "urgent">("normal");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
