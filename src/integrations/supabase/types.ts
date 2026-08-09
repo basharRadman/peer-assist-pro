@@ -14,16 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conversations: {
+        Row: {
+          created_at: string
+          helper_id: string
+          id: string
+          learner_id: string
+          request_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          helper_id: string
+          id?: string
+          learner_id: string
+          request_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          helper_id?: string
+          id?: string
+          learner_id?: string
+          request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          file_name: string | null
+          file_url: string | null
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body?: string
+          conversation_id: string
+          created_at?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string
+          completed_count: number
+          created_at: string
+          full_name: string
+          headline: string
+          id: string
+          rating: number
+          role: Database["public"]["Enums"]["user_role"]
+          subjects: string[]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string
+          completed_count?: number
+          created_at?: string
+          full_name?: string
+          headline?: string
+          id: string
+          rating?: number
+          role?: Database["public"]["Enums"]["user_role"]
+          subjects?: string[]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string
+          completed_count?: number
+          created_at?: string
+          full_name?: string
+          headline?: string
+          id?: string
+          rating?: number
+          role?: Database["public"]["Enums"]["user_role"]
+          subjects?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      requests: {
+        Row: {
+          attachment_url: string | null
+          created_at: string
+          description: string
+          id: string
+          learner_id: string
+          status: Database["public"]["Enums"]["request_status"]
+          subject: string
+          title: string
+          topic: string
+          updated_at: string
+          urgency: Database["public"]["Enums"]["urgency_level"]
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          learner_id: string
+          status?: Database["public"]["Enums"]["request_status"]
+          subject: string
+          title: string
+          topic?: string
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["urgency_level"]
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          learner_id?: string
+          status?: Database["public"]["Enums"]["request_status"]
+          subject?: string
+          title?: string
+          topic?: string
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["urgency_level"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_conversation_participant: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      request_status: "open" | "matched" | "completed"
+      urgency_level: "low" | "normal" | "urgent"
+      user_role: "learner" | "helper" | "both"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +308,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      request_status: ["open", "matched", "completed"],
+      urgency_level: ["low", "normal", "urgent"],
+      user_role: ["learner", "helper", "both"],
+    },
   },
 } as const
