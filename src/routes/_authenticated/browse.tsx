@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/use-session";
 import { SUBJECTS } from "@/lib/subjects";
 
-type Search = { subject?: string };
+type Search = { subject?: string | undefined };
 
 export const Route = createFileRoute("/_authenticated/browse")({
   validateSearch: (search: Record<string, unknown>): Search => ({
