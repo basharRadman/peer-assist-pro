@@ -450,6 +450,14 @@ export type Database = {
     Functions: {
       accept_offer: { Args: { _offer_id: string }; Returns: string }
       add_demo_funds: { Args: { _amount: number }; Returns: number }
+      get_wallet: {
+        Args: { _user_id?: string }
+        Returns: {
+          balance: number
+          earnings: number
+          escrow_held: number
+        }[]
+      }
       grant_admin_by_email: { Args: { _email: string }; Returns: undefined }
       has_role: {
         Args: {
@@ -461,6 +469,10 @@ export type Database = {
       is_conversation_participant: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
+      }
+      raise_dispute: {
+        Args: { _details?: string; _order_id: string; _reason: string }
+        Returns: string
       }
       refund_escrow: {
         Args: { _note?: string; _order_id: string }
