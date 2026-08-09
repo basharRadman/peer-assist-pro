@@ -38,9 +38,12 @@ function PostRequest() {
   const [subject, setSubject] = useState("");
   const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
+  const [budget, setBudget] = useState("40");
+  const [deadline, setDeadline] = useState("");
   const [urgency, setUrgency] = useState<"low" | "normal" | "urgent">("normal");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,6 +51,11 @@ function PostRequest() {
     const parsed = schema.safeParse({ title, subject, topic, description });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check the form");
+      return;
+    }
+    const budgetValue = Number(budget);
+    if (!Number.isFinite(budgetValue) || budgetValue <= 0 || budgetValue > 100000) {
+      toast.error("Set a budget between 1 and 100,000");
       return;
     }
     setBusy(true);
@@ -76,6 +84,8 @@ function PostRequest() {
       topic: parsed.data.topic,
       description: parsed.data.description,
       urgency,
+      budget: budgetValue,
+      deadline: deadline || null,
       attachment_url: attachmentUrl,
     });
     setBusy(false);
@@ -151,6 +161,34 @@ function PostRequest() {
               placeholder="What have you tried? What's the deadline? Paste error messages or the question here."
               required
             />
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="budget">Your budget (USD)</Label>
+              <Input
+                id="budget"
+                type="number"
+                min={1}
+                max={100000}
+                step="0.01"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                Held in escrow once you accept a helper's offer.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="deadline">Deadline (optional)</Label>
+              <Input
+                id="deadline"
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+              />
+            </div>
           </div>
 
           <div className="space-y-2">

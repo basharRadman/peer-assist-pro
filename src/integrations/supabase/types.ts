@@ -46,6 +46,50 @@ export type Database = {
           },
         ]
       }
+      disputes: {
+        Row: {
+          created_at: string
+          details: string
+          id: string
+          order_id: string
+          raised_by: string
+          reason: string
+          resolution_note: string
+          status: Database["public"]["Enums"]["dispute_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string
+          id?: string
+          order_id: string
+          raised_by: string
+          reason: string
+          resolution_note?: string
+          status?: Database["public"]["Enums"]["dispute_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string
+          id?: string
+          order_id?: string
+          raised_by?: string
+          reason?: string
+          resolution_note?: string
+          status?: Database["public"]["Enums"]["dispute_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           body: string
@@ -84,52 +128,182 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      offers: {
         Row: {
-          avatar_url: string | null
-          bio: string
-          completed_count: number
+          amount: number
           created_at: string
-          full_name: string
-          headline: string
+          helper_id: string
           id: string
-          rating: number
-          role: Database["public"]["Enums"]["user_role"]
-          subjects: string[]
+          message: string
+          request_id: string
+          status: Database["public"]["Enums"]["offer_status"]
           updated_at: string
         }
         Insert: {
-          avatar_url?: string | null
-          bio?: string
-          completed_count?: number
+          amount: number
           created_at?: string
-          full_name?: string
-          headline?: string
-          id: string
-          rating?: number
-          role?: Database["public"]["Enums"]["user_role"]
-          subjects?: string[]
+          helper_id: string
+          id?: string
+          message?: string
+          request_id: string
+          status?: Database["public"]["Enums"]["offer_status"]
           updated_at?: string
         }
         Update: {
+          amount?: number
+          created_at?: string
+          helper_id?: string
+          id?: string
+          message?: string
+          request_id?: string
+          status?: Database["public"]["Enums"]["offer_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          amount: number
+          created_at: string
+          delivery_note: string
+          delivery_url: string | null
+          helper_id: string
+          id: string
+          learner_id: string
+          offer_id: string | null
+          request_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          delivery_note?: string
+          delivery_url?: string | null
+          helper_id: string
+          id?: string
+          learner_id: string
+          offer_id?: string | null
+          request_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          delivery_note?: string
+          delivery_url?: string | null
+          helper_id?: string
+          id?: string
+          learner_id?: string
+          offer_id?: string | null
+          request_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          balance: number
+          bio: string
+          completed_count: number
+          created_at: string
+          earnings: number
+          education: string
+          escrow_held: number
+          full_name: string
+          headline: string
+          hourly_rate: number
+          id: string
+          portfolio_url: string
+          rating: number
+          response_minutes: number
+          reviews_count: number
+          role: Database["public"]["Enums"]["user_role"]
+          subjects: string[]
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
           avatar_url?: string | null
+          balance?: number
           bio?: string
           completed_count?: number
           created_at?: string
+          earnings?: number
+          education?: string
+          escrow_held?: number
           full_name?: string
           headline?: string
-          id?: string
+          hourly_rate?: number
+          id: string
+          portfolio_url?: string
           rating?: number
+          response_minutes?: number
+          reviews_count?: number
           role?: Database["public"]["Enums"]["user_role"]
           subjects?: string[]
           updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          avatar_url?: string | null
+          balance?: number
+          bio?: string
+          completed_count?: number
+          created_at?: string
+          earnings?: number
+          education?: string
+          escrow_held?: number
+          full_name?: string
+          headline?: string
+          hourly_rate?: number
+          id?: string
+          portfolio_url?: string
+          rating?: number
+          response_minutes?: number
+          reviews_count?: number
+          role?: Database["public"]["Enums"]["user_role"]
+          subjects?: string[]
+          updated_at?: string
+          verified?: boolean
         }
         Relationships: []
       }
       requests: {
         Row: {
           attachment_url: string | null
+          budget: number
           created_at: string
+          deadline: string | null
           description: string
           id: string
           learner_id: string
@@ -142,7 +316,9 @@ export type Database = {
         }
         Insert: {
           attachment_url?: string | null
+          budget?: number
           created_at?: string
+          deadline?: string | null
           description?: string
           id?: string
           learner_id: string
@@ -155,7 +331,9 @@ export type Database = {
         }
         Update: {
           attachment_url?: string | null
+          budget?: number
           created_at?: string
+          deadline?: string | null
           description?: string
           id?: string
           learner_id?: string
@@ -168,17 +346,155 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          helper_id: string
+          id: string
+          order_id: string
+          rating: number
+          reviewer_id: string
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          helper_id: string
+          id?: string
+          order_id: string
+          rating: number
+          reviewer_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          helper_id?: string
+          id?: string
+          order_id?: string
+          rating?: number
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          note: string
+          order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          note?: string
+          order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          note?: string
+          order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      accept_offer: { Args: { _offer_id: string }; Returns: string }
+      add_demo_funds: { Args: { _amount: number }; Returns: number }
+      get_wallet: {
+        Args: { _user_id?: string }
+        Returns: {
+          balance: number
+          earnings: number
+          escrow_held: number
+        }[]
+      }
+      grant_admin_by_email: { Args: { _email: string }; Returns: undefined }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_conversation_participant: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
       }
+      raise_dispute: {
+        Args: { _details?: string; _order_id: string; _reason: string }
+        Returns: string
+      }
+      refund_escrow: {
+        Args: { _note?: string; _order_id: string }
+        Returns: undefined
+      }
+      release_escrow: { Args: { _order_id: string }; Returns: undefined }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
+      dispute_status:
+        | "open"
+        | "resolved_released"
+        | "resolved_refunded"
+        | "rejected"
+      offer_status: "pending" | "accepted" | "declined" | "withdrawn"
+      order_status:
+        | "in_escrow"
+        | "under_review"
+        | "completed"
+        | "refunded"
+        | "disputed"
+        | "cancelled"
       request_status: "open" | "matched" | "completed"
       urgency_level: "low" | "normal" | "urgent"
       user_role: "learner" | "helper" | "both"
@@ -309,6 +625,22 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
+      dispute_status: [
+        "open",
+        "resolved_released",
+        "resolved_refunded",
+        "rejected",
+      ],
+      offer_status: ["pending", "accepted", "declined", "withdrawn"],
+      order_status: [
+        "in_escrow",
+        "under_review",
+        "completed",
+        "refunded",
+        "disputed",
+        "cancelled",
+      ],
       request_status: ["open", "matched", "completed"],
       urgency_level: ["low", "normal", "urgent"],
       user_role: ["learner", "helper", "both"],
