@@ -1,6 +1,15 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { GraduationCap, MessageSquare, PlusCircle, Search, User2, LogOut, Menu } from "lucide-react";
+import {
+  GraduationCap,
+  LayoutDashboard,
+  MessageSquare,
+  PlusCircle,
+  Search,
+  User2,
+  LogOut,
+  Menu,
+} from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,10 +25,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/browse", label: "Browse requests", icon: Search },
   { to: "/post", label: "Post a request", icon: PlusCircle },
   { to: "/messages", label: "Messages", icon: MessageSquare },
 ] as const;
+
 
 export function SiteHeader() {
   const { user } = useSession();
