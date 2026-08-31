@@ -166,6 +166,22 @@ function ProfilePage() {
     },
   });
 
+  // Transactions history
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   useEffect(() => {
     if (!profile) return;
     setFullName(profile.full_name ?? "");
@@ -321,6 +337,9 @@ function ProfilePage() {
               <TabsTrigger value="activity" className="gap-2">
                 <MessageSquare className="size-4" /> Activity
               </TabsTrigger>
++              <TabsTrigger value="transactions" className="gap-2">
++                <DollarSign className="size-4" /> Transactions
++              </TabsTrigger>
             </TabsList>
 
             {/* ---------------- Profile ---------------- */}
@@ -580,7 +599,7 @@ function ProfilePage() {
                     <li key={e.id} className="rounded-2xl border border-border bg-card p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold">{e.type.replace(/\./g, ' ')}</p>
+                          <p className="text-sm font-semibold">{e.type.replace(/\\./g, ' ')}</p>
                           <p className="mt-0.5 truncate text-sm text-muted-foreground">{e.payload ? JSON.stringify(e.payload) : ''}</p>
                         </div>
                         <span className="shrink-0 text-xs text-muted-foreground">{timeAgo(e.created_at)}</span>
@@ -590,6 +609,31 @@ function ProfilePage() {
                 </ul>
               )}
             </TabsContent>
+
++            {/* ---------------- Transactions ---------------- */}
++            <TabsContent value="transactions" className="mt-6">
++              {(!transactions || transactions.length === 0) ? (
++                <Empty text="No transactions on your account yet." />
++              ) : (
++                <ul className="space-y-2">
++                  {transactions.map((t: any) => (
++                    <li key={t.id} className="rounded-2xl border border-border bg-card p-4">
++                      <div className="flex items-center justify-between gap-3">
++                        <div className="min-w-0">
++                          <p className="text-sm font-semibold">{t.kind.replace(/_/g, ' ')}</p>
++                          <p className="mt-0.5 text-sm text-muted-foreground">{t.note}</p>
++                        </div>
++                        <div className="text-right">
++                          <div className={`font-medium ${Number(t.amount) >= 0 ? 'text-success' : 'text-destructive'}`}>{money(Number(t.amount))}</div>
++                          <div className="text-xs text-muted-foreground">{timeAgo(t.created_at)}</div>
++                        </div>
++                      </div>
++                    </li>
++                  ))}
++                </ul>
++              )}
++            </TabsContent>
+
           </Tabs>
         )}
       </main>
